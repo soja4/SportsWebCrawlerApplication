@@ -1,11 +1,32 @@
 package com.crawler.sport.api;
 
+import com.crawler.sport.api.dto.MatchResultDto;
+import com.crawler.sport.domain.MatchResult;
+import com.crawler.sport.service.MatchService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 @RequestMapping("match-result")
+@RequiredArgsConstructor
 public class MatchResultRestController {
+
+    private final MatchService matchService;
+
+    @GetMapping
+    public List<MatchResultDto> searchRequests() {
+        log.info("fetching match results");
+        List<MatchResult> matchResults = matchService.getMatchResults();
+
+        log.info("found " + matchResults.size() + " matchResults");
+
+        return matchResults.stream().map(MatchResultDto::from).collect(Collectors.toList());
+    }
 }
