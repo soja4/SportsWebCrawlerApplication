@@ -14,16 +14,20 @@ import java.time.LocalDate;
 @Builder
 public class MatchResultDto {
     private String homeTeam;
+    private Integer homeTeamId;
     private String awayTeam;
+    private Integer awayTeamId;
     private Integer homeTeamGoals;
     private Integer awayTeamGoals;
     private LocalDate matchDate;
 
     public static MatchResultDto from(MatchResult matchResult) {
         return MatchResultDto.builder()
-                .awayTeam(matchResult.getAwayTeam())
+                .awayTeam(matchResult.getAwayTeam().getTeamName())
+                .awayTeamId(matchResult.getAwayTeam().getId())
                 .awayTeamGoals(matchResult.getAwayTeamGoals())
-                .homeTeam(matchResult.getHomeTeam())
+                .homeTeam(matchResult.getHomeTeam().getTeamName())
+                .homeTeamId(matchResult.getHomeTeam().getId())
                 .homeTeamGoals(matchResult.getHomeTeamGoals())
                 .matchDate(matchResult.getMatchDate())
                 .build();

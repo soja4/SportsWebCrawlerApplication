@@ -20,4 +20,8 @@ public class MatchService {
     public List<MatchResult> getMatchResults() {
         return matchRepository.findAll();
     }
+
+    public List<MatchResult> getMatchResultsForTeam(Integer teamId) {
+        return matchRepository.findByHomeTeamIdOrAwayTeamId(teamId, teamId);
+    }
 }

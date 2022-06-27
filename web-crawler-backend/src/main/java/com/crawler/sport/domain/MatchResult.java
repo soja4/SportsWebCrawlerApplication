@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
@@ -25,11 +28,13 @@ public class MatchResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "home_team", nullable = false)
-    private String homeTeam;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "home_team_id", nullable = false)
+    private Team homeTeam;
 
-    @Column(name = "away_team", nullable = false)
-    private String awayTeam;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "away_team_id", nullable = false)
+    private Team awayTeam;
 
     @Column(name = "home_team_goals", nullable = false)
     private Integer homeTeamGoals;

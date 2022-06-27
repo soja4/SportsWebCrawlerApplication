@@ -1,6 +1,7 @@
 package com.crawler.sport.crawler;
 
 import com.crawler.sport.domain.MatchResult;
+import com.crawler.sport.domain.Team;
 import com.crawler.sport.service.MatchService;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -53,8 +54,8 @@ public class HtmlCrawler extends WebCrawler {
             String matchScore = doc.getElementsByClass("match_details_score").text();
             if (!matchScore.isEmpty() && counter < 10) {
                 counter++;
-                String homeTeam = doc.getElementsByClass("hTeam").text();
-                String awayTeam = doc.getElementsByClass("aTeam").text();
+                String homeTeamName = doc.getElementsByClass("hTeam").text();
+                String awayTeamName = doc.getElementsByClass("aTeam").text();
 
                 String[] score = matchScore.replaceAll(" ", "").split("-");
                 String matchDate = doc.getElementsByClass("match_details_date").text();
@@ -63,10 +64,13 @@ public class HtmlCrawler extends WebCrawler {
 
                 log.info(matchScore);
                 log.info(localDate.toString());
-                log.info(homeTeam);
-                log.info(awayTeam);
+                log.info(homeTeamName);
+                log.info(awayTeamName);
                 log.info("----------");
                 log.info(counter.toString());
+
+                Team homeTeam = Team.builder().teamName(homeTeamName).build();
+                Team awayTeam = Team.builder().teamName(awayTeamName).build();
 
                 MatchResult matchResult =
                         MatchResult.builder()
