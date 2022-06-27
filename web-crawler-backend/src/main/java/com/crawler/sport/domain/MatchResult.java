@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "match_result")
@@ -35,4 +36,7 @@ public class MatchResult {
 
     @Column(name = "away_team_goals", nullable = false)
     private Integer awayTeamGoals;
+
+    @Column(name = "match_date", nullable = false)
+    private LocalDate matchDate;
 }

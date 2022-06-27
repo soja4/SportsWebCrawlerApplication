@@ -5,5 +5,6 @@ CREATE TABLE `matchResult`
     `awayTeam`      varchar(255) not null,
     `homeTeamGoals` integer not null,
     `awayTeamGoals` integer not null,
+    `matchDate`     date not null,
     PRIMARY KEY (`id`)
 );

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,6 +17,7 @@ public class MatchResultDto {
     private String awayTeam;
     private Integer homeTeamGoals;
     private Integer awayTeamGoals;
+    private LocalDate matchDate;
 
     public static MatchResultDto from(MatchResult matchResult) {
         return MatchResultDto.builder()
@@ -22,6 +25,7 @@ public class MatchResultDto {
                 .awayTeamGoals(matchResult.getAwayTeamGoals())
                 .homeTeam(matchResult.getHomeTeam())
                 .homeTeamGoals(matchResult.getHomeTeamGoals())
+                .matchDate(matchResult.getMatchDate())
                 .build();
     }
 }

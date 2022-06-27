@@ -11,12 +11,18 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 @Slf4j
 @Component
 public class HtmlCrawler extends WebCrawler {
     private static Integer counter = 0;
+    private static final Integer MATCH_DATE_BEGIN = 12;
+    private static final Integer MATCH_DATE_END = 22;
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
 
     private final MatchService matchService;
 
@@ -49,12 +55,18 @@ public class HtmlCrawler extends WebCrawler {
                 counter++;
                 String homeTeam = doc.getElementsByClass("hTeam").text();
                 String awayTeam = doc.getElementsByClass("aTeam").text();
+
+                String[] score = matchScore.replaceAll(" ", "").split("-");
+                String matchDate = doc.getElementsByClass("match_details_date").text();
+                matchDate = matchDate.substring(MATCH_DATE_BEGIN, MATCH_DATE_END);
+                LocalDate localDate = LocalDate.parse(matchDate, formatter);
+
                 log.info(matchScore);
+                log.info(localDate.toString());
                 log.info(homeTeam);
                 log.info(awayTeam);
                 log.info("----------");
                 log.info(counter.toString());
-                String[] score = matchScore.replaceAll(" ", "").split("-");
 
                 MatchResult matchResult =
                         MatchResult.builder()
@@ -62,6 +74,7 @@ public class HtmlCrawler extends WebCrawler {
                                 .awayTeam(awayTeam)
                                 .homeTeamGoals(Integer.valueOf(score[0]))
                                 .awayTeamGoals(Integer.valueOf(score[1]))
+                                .matchDate(localDate)
                                 .build();
 
                 matchService.save(matchResult);
