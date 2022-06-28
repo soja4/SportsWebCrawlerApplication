@@ -22,11 +22,21 @@ public class MatchResultRestController {
     private final MatchService matchService;
 
     @GetMapping
-    public List<MatchResultDto> searchRequests() {
+    public List<MatchResultDto> getMatches() {
         log.info("fetching match results");
         List<MatchResult> matchResults = matchService.getMatchResults();
 
         log.info("found " + matchResults.size() + " matchResults");
+
+        return matchResults.stream().map(MatchResultDto::from).collect(Collectors.toList());
+    }
+
+    @GetMapping(path = "/to-be-played")
+    public List<MatchResultDto> getMatchesToBePlayed() {
+        log.info("fetching matches to be played");
+        List<MatchResult> matchResults = matchService.getMatchesToBePlayed();
+
+        log.info("found " + matchResults.size() + " matches to be played");
 
         return matchResults.stream().map(MatchResultDto::from).collect(Collectors.toList());
     }

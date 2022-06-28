@@ -1,6 +1,7 @@
 package com.crawler.sport.service;
 
 import com.crawler.sport.domain.MatchResult;
+import com.crawler.sport.domain.MatchStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +24,9 @@ public class MatchService {
 
     public List<MatchResult> getMatchResultsForTeam(Integer teamId) {
         return matchRepository.findByHomeTeamIdOrAwayTeamId(teamId, teamId);
+    }
+
+    public List<MatchResult> getMatchesToBePlayed() {
+        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED);
     }
 }
