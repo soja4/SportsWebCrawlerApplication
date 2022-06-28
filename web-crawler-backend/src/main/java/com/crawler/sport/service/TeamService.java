@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TeamService {
 
-    @Autowired
-    private TeamRepository teamRepository;
+    @Autowired private TeamRepository teamRepository;
 
     public void setTeams(MatchResult matchResult) {
         Team homeTeam = getTeamByName(matchResult.getHomeTeam().getTeamName());

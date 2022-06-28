@@ -20,18 +20,15 @@ import java.util.regex.Pattern;
 @Slf4j
 @Component
 public class HtmlCrawler extends WebCrawler {
-    private static Integer counter = 0;
     private static final Integer MATCH_DATE_BEGIN = 12;
     private static final Integer MATCH_DATE_END = 22;
-
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
-
+    private static final Pattern EXCLUSIONS =
+            Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
+    private static Integer counter = 0;
     private final MatchService matchService;
 
     private final TeamService teamService;
-
-    private static final Pattern EXCLUSIONS =
-            Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
 
     public HtmlCrawler(MatchService matchService, TeamService teamService) {
         this.matchService = matchService;
