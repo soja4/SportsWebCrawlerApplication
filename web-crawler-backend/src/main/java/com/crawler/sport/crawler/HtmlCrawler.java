@@ -3,6 +3,7 @@ package com.crawler.sport.crawler;
 import com.crawler.sport.domain.MatchResult;
 import com.crawler.sport.domain.Team;
 import com.crawler.sport.service.MatchService;
+import com.crawler.sport.service.TeamService;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
 import edu.uci.ics.crawler4j.parser.HtmlParseData;
@@ -27,11 +28,14 @@ public class HtmlCrawler extends WebCrawler {
 
     private final MatchService matchService;
 
+    private final TeamService teamService;
+
     private static final Pattern EXCLUSIONS =
             Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
 
-    public HtmlCrawler(MatchService matchService) {
+    public HtmlCrawler(MatchService matchService, TeamService teamService) {
         this.matchService = matchService;
+        this.teamService = teamService;
     }
 
     @Override
@@ -80,6 +84,8 @@ public class HtmlCrawler extends WebCrawler {
                                 .awayTeamGoals(Integer.valueOf(score[1]))
                                 .matchDate(localDate)
                                 .build();
+
+                teamService.setTeams(matchResult);
 
                 matchService.save(matchResult);
             }

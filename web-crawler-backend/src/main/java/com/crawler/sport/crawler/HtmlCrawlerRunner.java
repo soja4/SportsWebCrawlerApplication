@@ -1,6 +1,7 @@
 package com.crawler.sport.crawler;
 
 import com.crawler.sport.service.MatchService;
+import com.crawler.sport.service.TeamService;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
@@ -20,6 +21,7 @@ public class HtmlCrawlerRunner implements CommandLineRunner {
     private String urlRoot;
 
     @Autowired private MatchService matchService;
+    @Autowired private TeamService teamService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -37,7 +39,7 @@ public class HtmlCrawlerRunner implements CommandLineRunner {
         controller.addSeed(urlRoot);
 
         CrawlController.WebCrawlerFactory<HtmlCrawler> factory =
-                () -> new HtmlCrawler(matchService);
+                () -> new HtmlCrawler(matchService, teamService);
 
         controller.start(factory, numCrawlers);
     }
