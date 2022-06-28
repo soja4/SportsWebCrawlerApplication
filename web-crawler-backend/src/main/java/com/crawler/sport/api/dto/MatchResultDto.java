@@ -20,6 +20,7 @@ public class MatchResultDto {
     private Integer homeTeamGoals;
     private Integer awayTeamGoals;
     private LocalDate matchDate;
+    private MatchStatusDto matchStatusDto;
 
     public static MatchResultDto from(MatchResult matchResult) {
         return MatchResultDto.builder()
@@ -30,6 +31,7 @@ public class MatchResultDto {
                 .homeTeamId(matchResult.getHomeTeam().getId())
                 .homeTeamGoals(matchResult.getHomeTeamGoals())
                 .matchDate(matchResult.getMatchDate())
+                .matchStatusDto(MatchStatusDto.from(matchResult.getStatus()))
                 .build();
     }
 }

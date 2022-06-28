@@ -1,15 +1,16 @@
 CREATE TABLE `matchResult`
 (
-    `id`            integer NOT NULL,
-    `homeTeamId`    integer not null
+    `id`            integer  NOT NULL,
+    `homeTeamId`    integer  not null
         constraint fk_home_team_id
             references team,
-    `awayTeamId`    integer not null
+    `awayTeamId`    integer  not null
         constraint fk_away_team_id
             references team,
-    `homeTeamGoals` integer not null,
-    `awayTeamGoals` integer not null,
-    `matchDate`     date    not null,
+    `homeTeamGoals` integer,
+    `awayTeamGoals` integer,
+    `status`        smallint not null,
+    `matchDate`     date     not null,
     PRIMARY KEY (`id`)
 );
 

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,11 +38,15 @@ public class MatchResult {
     @JoinColumn(name = "away_team_id", nullable = false)
     private Team awayTeam;
 
-    @Column(name = "home_team_goals", nullable = false)
+    @Column(name = "home_team_goals")
     private Integer homeTeamGoals;
 
-    @Column(name = "away_team_goals", nullable = false)
+    @Column(name = "away_team_goals")
     private Integer awayTeamGoals;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private MatchStatus status;
 
     @Column(name = "match_date", nullable = false)
     private LocalDate matchDate;

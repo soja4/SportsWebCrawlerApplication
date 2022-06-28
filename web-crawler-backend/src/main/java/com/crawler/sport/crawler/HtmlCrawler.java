@@ -1,6 +1,7 @@
 package com.crawler.sport.crawler;
 
 import com.crawler.sport.domain.MatchResult;
+import com.crawler.sport.domain.MatchStatus;
 import com.crawler.sport.domain.Team;
 import com.crawler.sport.service.MatchService;
 import com.crawler.sport.service.TeamService;
@@ -24,7 +25,6 @@ public class HtmlCrawler extends WebCrawler {
     private static final Integer MATCH_DATE_END = 22;
     private static final Pattern EXCLUSIONS =
             Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
-    private static Integer counter = 0;
     private final MatchService matchService;
 
     private final TeamService teamService;
@@ -53,39 +53,46 @@ public class HtmlCrawler extends WebCrawler {
 
             Document doc = Jsoup.parseBodyFragment(html);
             String matchScore = doc.getElementsByClass("match_details_score").text();
-            if (!matchScore.isEmpty() && counter < 10) {
-                counter++;
-                String homeTeamName = doc.getElementsByClass("hTeam").text();
-                String awayTeamName = doc.getElementsByClass("aTeam").text();
+            String matchStatus = doc.getElementsByClass("match_details_status").text();
 
-                String[] score = matchScore.replaceAll(" ", "").split("-");
-                String matchDate = doc.getElementsByClass("match_details_date").text();
-                matchDate = matchDate.substring(MATCH_DATE_BEGIN, MATCH_DATE_END);
-                LocalDate localDate = LocalDate.parse(matchDate, formatter);
+            String homeTeamName = doc.getElementsByClass("hTeam").text();
+            String awayTeamName = doc.getElementsByClass("aTeam").text();
 
-                log.info(matchScore);
-                log.info(localDate.toString());
-                log.info(homeTeamName);
-                log.info(awayTeamName);
-                log.info("----------");
-                log.info(counter.toString());
+            String matchDate = doc.getElementsByClass("match_details_date").text();
+            matchDate = matchDate.substring(MATCH_DATE_BEGIN, MATCH_DATE_END);
+            LocalDate localDate = LocalDate.parse(matchDate, formatter);
 
-                Team homeTeam = Team.builder().teamName(homeTeamName).build();
-                Team awayTeam = Team.builder().teamName(awayTeamName).build();
+            String[] score = new String[0];
 
-                MatchResult matchResult =
-                        MatchResult.builder()
-                                .homeTeam(homeTeam)
-                                .awayTeam(awayTeam)
-                                .homeTeamGoals(Integer.valueOf(score[0]))
-                                .awayTeamGoals(Integer.valueOf(score[1]))
-                                .matchDate(localDate)
-                                .build();
-
-                teamService.setTeams(matchResult);
-
-                matchService.save(matchResult);
+            if (!matchScore.isEmpty()) {
+                score = matchScore.replaceAll(" ", "").split("-");
             }
+
+            log.info(matchScore);
+            log.info(localDate.toString());
+            log.info(homeTeamName);
+            log.info(awayTeamName);
+            log.info("----------");
+
+            Team homeTeam = Team.builder().teamName(homeTeamName).build();
+            Team awayTeam = Team.builder().teamName(awayTeamName).build();
+
+            MatchResult matchResult =
+                    MatchResult.builder()
+                            .homeTeam(homeTeam)
+                            .awayTeam(awayTeam)
+                            .homeTeamGoals(score.length != 0 ? Integer.valueOf(score[0]) : null)
+                            .awayTeamGoals(score.length != 0 ? Integer.valueOf(score[1]) : null)
+                            .matchDate(localDate)
+                            .status(
+                                    matchScore.isEmpty()
+                                            ? MatchStatus.TO_BE_PLAYED
+                                            : MatchStatus.FINISHED)
+                            .build();
+
+            teamService.setTeams(matchResult);
+
+            matchService.save(matchResult);
         }
     }
 }
