@@ -21,7 +21,7 @@ public class MatchResultRestController {
 
     private final MatchService matchService;
 
-    @GetMapping
+    @GetMapping(path = "all")
     public List<MatchResultDto> getMatches() {
         log.info("fetching match results");
         List<MatchResult> matchResults = matchService.getMatchResults();
@@ -34,7 +34,7 @@ public class MatchResultRestController {
     @GetMapping(path = "/to-be-played")
     public List<MatchResultDto> getMatchesToBePlayed() {
         log.info("fetching matches to be played");
-        List<MatchResult> matchResults = matchService.getMatchesToBePlayed();
+        List<MatchResult> matchResults = matchService.getMatchesToBePlayedAndOdds();
 
         log.info("found " + matchResults.size() + " matches to be played");
 
