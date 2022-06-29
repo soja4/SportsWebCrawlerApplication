@@ -15,4 +15,8 @@ public interface MatchRepository extends JpaRepository<MatchResult, Integer> {
             Integer homeTeamId, Integer awayTeamId, Pageable pageable);
 
     List<MatchResult> findByStatus(MatchStatus matchStatus);
+
+    List<MatchResult> findByHomeTeamId(Integer teamId, Pageable pageable);
+
+    List<MatchResult> findByAwayTeamId(Integer teamId, Pageable pageable);
 }

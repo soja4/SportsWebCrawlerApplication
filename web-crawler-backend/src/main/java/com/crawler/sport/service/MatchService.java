@@ -18,18 +18,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MatchService {
 
-    @Autowired private MatchRepository matchRepository;
-
     private static final String SCORED_GOALS = "SCORED_GOALS";
     private static final String CONCEDED_GOALS = "CONCEDED_GOALS";
     private static final String TEAM_POINTS = "TEAM_POINTS";
     private static final String MATCHES_SIZE = "MATCHES_SIZE";
-
     private static final Integer WIN_POINTS = 3;
     private static final Integer LOSE_POINTS = 0;
     private static final Integer DRAW_POINTS = 1;
-
     Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "updatedAt"));
+    @Autowired private MatchRepository matchRepository;
 
     public void save(MatchResult matchResult) {
         matchRepository.save(matchResult);
@@ -41,6 +38,14 @@ public class MatchService {
 
     public List<MatchResult> getMatchResultsForTeam(Integer teamId) {
         return matchRepository.findByHomeTeamIdOrAwayTeamId(teamId, teamId, pageable);
+    }
+
+    public List<MatchResult> getMatchResultsAsHomeTeam(Integer teamId) {
+        return matchRepository.findByHomeTeamId(teamId, pageable);
+    }
+
+    public List<MatchResult> getMatchResultsAsAwayTeam(Integer teamId) {
+        return matchRepository.findByAwayTeamId(teamId, pageable);
     }
 
     public List<MatchResult> getMatchesToBePlayed() {
@@ -70,6 +75,26 @@ public class MatchService {
                     (double)
                             (awayTeamFeatures.get(TEAM_POINTS)
                                     / homeTeamFeatures.get(MATCHES_SIZE));
+
+            Integer homeTeamWinsAtHome = 0;
+            Integer homeTeamGoalsAtHome = 0;
+            List<MatchResult> homeTeamAtHome = getMatchResultsAsHomeTeam(homeTeam.getId());
+            for (MatchResult homeMatchResult : homeTeamAtHome) {
+                homeTeamGoalsAtHome += homeMatchResult.getHomeTeamGoals();
+                if (homeMatchResult.getHomeTeamGoals() > homeMatchResult.getAwayTeamGoals()) {
+                    homeTeamWinsAtHome++;
+                }
+            }
+
+            Integer awayTeamWinsAtAway = 0;
+            Integer awayTeamGoalsAtAway = 0;
+            List<MatchResult> awayTeamAtHome = getMatchResultsAsAwayTeam(awayTeam.getId());
+            for (MatchResult awayMatchResult : awayTeamAtHome) {
+                awayTeamGoalsAtAway += awayMatchResult.getAwayTeamGoals();
+                if (awayMatchResult.getAwayTeamGoals() > awayMatchResult.getHomeTeamGoals()) {
+                    awayTeamWinsAtAway++;
+                }
+            }
         }
 
         return null;
