@@ -3,7 +3,7 @@ package com.crawler.sport.crawler;
 import com.crawler.sport.domain.MatchResult;
 import com.crawler.sport.domain.MatchStatus;
 import com.crawler.sport.domain.Team;
-import com.crawler.sport.service.MatchService;
+import com.crawler.sport.service.MatchResultService;
 import com.crawler.sport.service.TeamService;
 import edu.uci.ics.crawler4j.crawler.Page;
 import edu.uci.ics.crawler4j.crawler.WebCrawler;
@@ -25,13 +25,13 @@ public class HtmlCrawler extends WebCrawler {
     private static final Integer MATCH_DATE_END = 22;
     private static final Pattern EXCLUSIONS =
             Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
-    private final MatchService matchService;
+    private final MatchResultService matchService;
 
     private final TeamService teamService;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
 
-    public HtmlCrawler(MatchService matchService, TeamService teamService) {
-        this.matchService = matchService;
+    public HtmlCrawler(MatchResultService matchResultService, TeamService teamService) {
+        this.matchService = matchResultService;
         this.teamService = teamService;
     }
 

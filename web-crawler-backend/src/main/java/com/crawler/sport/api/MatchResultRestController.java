@@ -2,7 +2,7 @@ package com.crawler.sport.api;
 
 import com.crawler.sport.api.dto.MatchResultDto;
 import com.crawler.sport.domain.MatchResult;
-import com.crawler.sport.service.MatchService;
+import com.crawler.sport.service.MatchResultService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MatchResultRestController {
 
-    private final MatchService matchService;
+    private final MatchResultService matchService;
 
     @GetMapping(path = "all")
     public List<MatchResultDto> getMatches() {

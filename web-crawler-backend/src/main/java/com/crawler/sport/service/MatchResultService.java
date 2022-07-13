@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MatchService {
+public class MatchResultService {
 
     private static final String SCORED_GOALS = "SCORED_GOALS";
     private static final String CONCEDED_GOALS = "CONCEDED_GOALS";
@@ -26,7 +26,7 @@ public class MatchService {
     private static final Integer LOSE_POINTS = 0;
     private static final Integer DRAW_POINTS = 1;
     Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.DESC, "updatedAt"));
-    @Autowired private MatchRepository matchRepository;
+    @Autowired private MatchResultRepository matchRepository;
 
     public void save(MatchResult matchResult) {
         matchRepository.save(matchResult);

@@ -1,6 +1,6 @@
 package com.crawler.sport.crawler;
 
-import com.crawler.sport.service.MatchService;
+import com.crawler.sport.service.MatchResultService;
 import com.crawler.sport.service.TeamService;
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
 import edu.uci.ics.crawler4j.crawler.CrawlController;
@@ -20,7 +20,7 @@ public class HtmlCrawlerRunner implements CommandLineRunner {
     @Value("${url.root}")
     private String urlRoot;
 
-    @Autowired private MatchService matchService;
+    @Autowired private MatchResultService matchResultService;
     @Autowired private TeamService teamService;
 
     @Override
@@ -39,7 +39,7 @@ public class HtmlCrawlerRunner implements CommandLineRunner {
         controller.addSeed(urlRoot);
 
         CrawlController.WebCrawlerFactory<HtmlCrawler> factory =
-                () -> new HtmlCrawler(matchService, teamService);
+                () -> new HtmlCrawler(matchResultService, teamService);
 
         controller.start(factory, numCrawlers);
     }

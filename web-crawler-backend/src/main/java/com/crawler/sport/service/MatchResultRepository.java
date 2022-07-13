@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MatchRepository extends JpaRepository<MatchResult, Integer> {
+public interface MatchResultRepository extends JpaRepository<MatchResult, Integer> {
 
     List<MatchResult> findByHomeTeamIdOrAwayTeamId(
             Integer homeTeamId, Integer awayTeamId, Pageable pageable);
