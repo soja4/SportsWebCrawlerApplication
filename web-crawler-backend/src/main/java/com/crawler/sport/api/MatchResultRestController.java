@@ -19,12 +19,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MatchResultRestController {
 
-    private final MatchResultService matchService;
+    private final MatchResultService matchResultService;
 
     @GetMapping(path = "all")
     public List<MatchResultDto> getMatches() {
         log.info("fetching match results");
-        List<MatchResult> matchResults = matchService.getMatchResults();
+        List<MatchResult> matchResults = matchResultService.getMatchResults();
 
         log.info("found " + matchResults.size() + " matchResults");
 
@@ -34,7 +34,7 @@ public class MatchResultRestController {
     @GetMapping(path = "/to-be-played")
     public List<MatchResultDto> getMatchesToBePlayed() {
         log.info("fetching matches to be played");
-        List<MatchResult> matchResults = matchService.getMatchesToBePlayedAndOdds();
+        List<MatchResult> matchResults = matchResultService.getMatchesToBePlayedAndOdds();
 
         log.info("found " + matchResults.size() + " matches to be played");
 
@@ -44,7 +44,7 @@ public class MatchResultRestController {
     @GetMapping(path = "{teamId}")
     public List<MatchResultDto> getMatchesForTeam(@PathVariable Integer teamId) {
         log.info("fetching match results for specific team with id: {}", teamId);
-        List<MatchResult> matchResults = matchService.getMatchResultsForTeam(teamId);
+        List<MatchResult> matchResults = matchResultService.getMatchResultsForTeam(teamId);
 
         log.info("found " + matchResults.size() + " matchResults");
 
