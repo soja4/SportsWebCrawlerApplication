@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -25,13 +26,13 @@ public class HtmlCrawler extends WebCrawler {
     private static final Integer MATCH_DATE_END = 22;
     private static final Pattern EXCLUSIONS =
             Pattern.compile(".*(\\.(css|js|xml|gif|jpg|png|mp3|mp4|zip|gz|pdf))$");
-    private final MatchResultService matchService;
+    private final MatchResultService matchResultService;
 
     private final TeamService teamService;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d-MM-yyyy");
 
     public HtmlCrawler(MatchResultService matchResultService, TeamService teamService) {
-        this.matchService = matchResultService;
+        this.matchResultService = matchResultService;
         this.teamService = teamService;
     }
 
@@ -53,7 +54,7 @@ public class HtmlCrawler extends WebCrawler {
 
             Document doc = Jsoup.parseBodyFragment(html);
             String matchScore = doc.getElementsByClass("match_details_score").text();
-            String matchStatus = doc.getElementsByClass("match_details_status").text();
+            // String matchStatus = doc.getElementsByClass("match_details_status").text();
 
             String homeTeamName = doc.getElementsByClass("hTeam").text();
             String awayTeamName = doc.getElementsByClass("aTeam").text();
@@ -92,7 +93,13 @@ public class HtmlCrawler extends WebCrawler {
 
             teamService.setTeams(matchResult);
 
-            matchService.save(matchResult);
+            List<MatchResult> matches = matchResultService.findSameMatchResult(matchResult);
+
+            if (matches.isEmpty()) {
+                matchResultService.save(matchResult);
+            } else {
+                log.info("There is already a match in database! ------------ ");
+            }
         }
     }
 }

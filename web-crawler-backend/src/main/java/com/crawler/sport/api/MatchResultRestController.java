@@ -32,7 +32,7 @@ public class MatchResultRestController {
     }
 
     @GetMapping(path = "/to-be-played")
-    public List<MatchResultDto> getMatchesToBePlayed() {
+    public List<MatchResultDto> getMatchesToBePlayed() throws Exception {
         log.info("fetching matches to be played");
         List<MatchResult> matchResults = matchResultService.getMatchesToBePlayedAndOdds();
 
@@ -44,7 +44,7 @@ public class MatchResultRestController {
     @GetMapping(path = "{teamId}")
     public List<MatchResultDto> getMatchesForTeam(@PathVariable Integer teamId) {
         log.info("fetching match results for specific team with id: {}", teamId);
-        List<MatchResult> matchResults = matchResultService.getMatchResultsForTeam(teamId);
+        List<MatchResult> matchResults = matchResultService.getFinishedMatchResultsForTeam(teamId);
 
         log.info("found " + matchResults.size() + " matchResults");
 

@@ -13,6 +13,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 @Component
 public class HtmlCrawlerRunner implements CommandLineRunner {
@@ -35,6 +37,8 @@ public class HtmlCrawlerRunner implements CommandLineRunner {
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
+
+        BlockingQueue<String> urlsQueue = new ArrayBlockingQueue<>(400);
 
         controller.addSeed(urlRoot);
 

@@ -16,10 +16,21 @@ public class TeamService {
         Team homeTeam = getTeamByName(matchResult.getHomeTeam().getTeamName());
         if (homeTeam != null) {
             matchResult.setHomeTeam(homeTeam);
+        } else {
+            Team savedTeam =
+                    Team.builder().teamName(matchResult.getHomeTeam().getTeamName()).build();
+            savedTeam = teamRepository.save(savedTeam);
+            matchResult.setHomeTeam(savedTeam);
         }
+
         Team awayTeam = getTeamByName(matchResult.getAwayTeam().getTeamName());
         if (awayTeam != null) {
             matchResult.setAwayTeam(awayTeam);
+        } else {
+            Team savedTeam =
+                    Team.builder().teamName(matchResult.getAwayTeam().getTeamName()).build();
+            savedTeam = teamRepository.save(savedTeam);
+            matchResult.setAwayTeam(savedTeam);
         }
     }
 
