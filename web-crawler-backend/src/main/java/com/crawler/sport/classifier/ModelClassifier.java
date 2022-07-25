@@ -94,7 +94,7 @@ public class ModelClassifier {
         return dataRaw;
     }
 
-    public String classifiy(Instances insts, String path) {
+    public String classify(Instances insts, String path) {
         String result = "Not classified!!";
         Classifier cls;
         try {

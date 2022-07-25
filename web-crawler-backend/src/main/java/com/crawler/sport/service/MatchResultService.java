@@ -153,7 +153,7 @@ public class MatchResultService {
             }
 
             String classname =
-                    cls.classifiy(
+                    cls.classify(
                             Filter.useFilter(
                                     cls.createInstance(
                                             homeTeamGoalsScored,
