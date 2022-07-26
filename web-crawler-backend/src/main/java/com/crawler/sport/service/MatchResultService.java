@@ -35,12 +35,14 @@ public class MatchResultService {
     private static final String CONCEDED_GOALS = "CONCEDED_GOALS";
     private static final String TEAM_POINTS = "TEAM_POINTS";
     private static final String MATCHES_SIZE = "MATCHES_SIZE";
+
+    private static final Integer NUMBER_OF_MATCHES = 20;
     private static final Integer WIN_POINTS = 3;
     private static final Integer LOSE_POINTS = 0;
     private static final Integer DRAW_POINTS = 1;
     Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "matchDate"));
     Pageable pageableForFinishedMatches =
-            PageRequest.of(0, 500, Sort.by(Sort.Direction.ASC, "matchDate"));
+            PageRequest.of(0, 5000, Sort.by(Sort.Direction.ASC, "matchDate"));
     @Autowired private MatchResultRepository matchRepository;
 
     public static final String MODEL_PATH = "/Users/soja/model.bin";
@@ -77,7 +79,7 @@ public class MatchResultService {
         return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, null);
     }
 
-    public List<MatchResult> getMatchesToBePlayedAndOdds() throws Exception {
+    public List<MatchResult> getMatchesToBePlayedAndPredictions() throws Exception {
         List<MatchResult> matches = getMatchesToBePlayed();
 
         Instances dataset = loadDataset();
@@ -205,6 +207,16 @@ public class MatchResultService {
             Map<String, Integer> homeTeamFeatures = getScoredAndConcededGoals(homeTeam);
             Map<String, Integer> awayTeamFeatures = getScoredAndConcededGoals(awayTeam);
 
+            List<MatchResult> homeTeamAtHome = getMatchResultsAsHomeTeam(homeTeam.getId());
+            List<MatchResult> awayTeamAtHome = getMatchResultsAsAwayTeam(awayTeam.getId());
+
+            if (homeTeamFeatures.get(MATCHES_SIZE) != NUMBER_OF_MATCHES
+                    || awayTeamFeatures.get(MATCHES_SIZE) != NUMBER_OF_MATCHES
+                    || homeTeamAtHome.size() != NUMBER_OF_MATCHES
+                    || awayTeamAtHome.size() != NUMBER_OF_MATCHES) {
+                continue;
+            }
+
             Integer homeTeamGoalsScored = homeTeamFeatures.get(SCORED_GOALS);
             Integer homeTeamGoalsConceded = homeTeamFeatures.get(CONCEDED_GOALS);
             Double homeTeamAvgPoints =
@@ -221,7 +233,7 @@ public class MatchResultService {
 
             Integer homeTeamWinsAtHome = 0;
             Integer homeTeamGoalsAtHome = 0;
-            List<MatchResult> homeTeamAtHome = getMatchResultsAsHomeTeam(homeTeam.getId());
+
             for (MatchResult homeMatchResult : homeTeamAtHome) {
                 homeTeamGoalsAtHome += homeMatchResult.getHomeTeamGoals();
                 if (homeMatchResult.getHomeTeamGoals() > homeMatchResult.getAwayTeamGoals()) {
@@ -231,7 +243,7 @@ public class MatchResultService {
 
             Integer awayTeamWinsAtAway = 0;
             Integer awayTeamGoalsAtAway = 0;
-            List<MatchResult> awayTeamAtHome = getMatchResultsAsAwayTeam(awayTeam.getId());
+
             for (MatchResult awayMatchResult : awayTeamAtHome) {
                 awayTeamGoalsAtAway += awayMatchResult.getAwayTeamGoals();
                 if (awayMatchResult.getAwayTeamGoals() > awayMatchResult.getHomeTeamGoals()) {
@@ -255,20 +267,6 @@ public class MatchResultService {
                     };
 
             data.add(new DenseInstance(1.0, values));
-
-            /*double[] values = new double[data.numAttributes()];
-            values[0] = homeTeamGoalsScored;
-            values[1] = awayTeamGoalsScored;
-            values[2] = homeTeamGoalsConceded;
-            values[3] = awayTeamGoalsConceded;
-            values[4] = homeTeamAvgPoints;
-            values[5] = awayTeamAvgPoints;
-            values[6] = homeTeamWinsAtHome;
-            values[7] = awayTeamWinsAtAway;
-            values[8] = homeTeamGoalsAtHome;
-            values[9] = awayTeamGoalsAtAway;
-            values[10] = data.attribute(10).addStringValue(getMatchOutcome(matchResult));
-            data.add(new DenseInstance(1.0, values));*/
         }
 
         return data;

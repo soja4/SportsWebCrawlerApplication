@@ -34,7 +34,7 @@ public class MatchResultRestController {
     @GetMapping(path = "/to-be-played")
     public List<MatchResultDto> getMatchesToBePlayed() throws Exception {
         log.info("fetching matches to be played");
-        List<MatchResult> matchResults = matchResultService.getMatchesToBePlayedAndOdds();
+        List<MatchResult> matchResults = matchResultService.getMatchesToBePlayedAndPredictions();
 
         log.info("found " + matchResults.size() + " matches to be played");
 
