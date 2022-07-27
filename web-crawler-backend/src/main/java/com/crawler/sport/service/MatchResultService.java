@@ -36,13 +36,13 @@ public class MatchResultService {
     private static final String TEAM_POINTS = "TEAM_POINTS";
     private static final String MATCHES_SIZE = "MATCHES_SIZE";
 
-    private static final Integer NUMBER_OF_MATCHES = 20;
+    private static final Integer NUMBER_OF_MATCHES = 10;
     private static final Integer WIN_POINTS = 3;
     private static final Integer LOSE_POINTS = 0;
     private static final Integer DRAW_POINTS = 1;
-    Pageable pageable = PageRequest.of(0, 20, Sort.by(Sort.Direction.ASC, "matchDate"));
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "matchDate"));
     Pageable pageableForFinishedMatches =
-            PageRequest.of(0, 5000, Sort.by(Sort.Direction.ASC, "matchDate"));
+            PageRequest.of(0, 1000, Sort.by(Sort.Direction.DESC, "matchDate"));
     @Autowired private MatchResultRepository matchRepository;
 
     public static final String MODEL_PATH = "/Users/soja/model.bin";
@@ -76,7 +76,7 @@ public class MatchResultService {
     }
 
     public List<MatchResult> getMatchesToBePlayed() {
-        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, null);
+        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, pageableForFinishedMatches);
     }
 
     public List<MatchResult> getMatchesToBePlayedAndPredictions() throws Exception {
@@ -88,10 +88,7 @@ public class MatchResultService {
         int trainSize = (int) Math.round(dataset.numInstances() * 0.8);
         int testSize = dataset.numInstances() - trainSize;
 
-        dataset.randomize(
-                new Debug.Random(
-                        1)); // if you comment this line the accuracy of the model will be droped
-        // from 96.6% to 80%
+        dataset.randomize(new Debug.Random(1));
 
         // Normalize dataset
         filter.setInputFormat(dataset);
@@ -110,7 +107,7 @@ public class MatchResultService {
         // Save model
         mg.saveModel(ann, MODEL_PATH);
 
-        // classifiy a single instance
+        // classify a single instance
         ModelClassifier cls = new ModelClassifier();
 
         for (MatchResult matchResult : matches) {
@@ -120,6 +117,15 @@ public class MatchResultService {
             Map<String, Integer> homeTeamFeatures = getScoredAndConcededGoals(homeTeam);
             Map<String, Integer> awayTeamFeatures = getScoredAndConcededGoals(awayTeam);
 
+            List<MatchResult> homeTeamAtHome = getMatchResultsAsHomeTeam(homeTeam.getId());
+            List<MatchResult> awayTeamAtHome = getMatchResultsAsAwayTeam(awayTeam.getId());
+
+            if (!homeTeamFeatures.get(MATCHES_SIZE).equals(NUMBER_OF_MATCHES)
+                    || !awayTeamFeatures.get(MATCHES_SIZE).equals(NUMBER_OF_MATCHES)
+                    || homeTeamAtHome.size() != NUMBER_OF_MATCHES
+                    || awayTeamAtHome.size() != NUMBER_OF_MATCHES) {
+                continue;
+            }
             Integer homeTeamGoalsScored = homeTeamFeatures.get(SCORED_GOALS);
             Integer homeTeamGoalsConceded = homeTeamFeatures.get(CONCEDED_GOALS);
             Double homeTeamAvgPoints =
@@ -136,7 +142,7 @@ public class MatchResultService {
 
             Integer homeTeamWinsAtHome = 0;
             Integer homeTeamGoalsAtHome = 0;
-            List<MatchResult> homeTeamAtHome = getMatchResultsAsHomeTeam(homeTeam.getId());
+
             for (MatchResult homeMatchResult : homeTeamAtHome) {
                 homeTeamGoalsAtHome += homeMatchResult.getHomeTeamGoals();
                 if (homeMatchResult.getHomeTeamGoals() > homeMatchResult.getAwayTeamGoals()) {
@@ -146,7 +152,7 @@ public class MatchResultService {
 
             Integer awayTeamWinsAtAway = 0;
             Integer awayTeamGoalsAtAway = 0;
-            List<MatchResult> awayTeamAtHome = getMatchResultsAsAwayTeam(awayTeam.getId());
+
             for (MatchResult awayMatchResult : awayTeamAtHome) {
                 awayTeamGoalsAtAway += awayMatchResult.getAwayTeamGoals();
                 if (awayMatchResult.getAwayTeamGoals() > awayMatchResult.getHomeTeamGoals()) {
@@ -154,23 +160,30 @@ public class MatchResultService {
                 }
             }
 
-            String classname =
-                    cls.classify(
-                            Filter.useFilter(
-                                    cls.createInstance(
-                                            homeTeamGoalsScored,
-                                            awayTeamGoalsScored,
-                                            homeTeamGoalsConceded,
-                                            awayTeamGoalsConceded,
-                                            homeTeamAvgPoints,
-                                            awayTeamAvgPoints,
-                                            homeTeamWinsAtHome,
-                                            awayTeamWinsAtAway,
-                                            homeTeamGoalsAtHome,
-                                            awayTeamGoalsAtAway),
-                                    filter),
-                            MODEL_PATH);
-            log.info("The class name is  " + classname);
+            String classname = null;
+            try {
+                classname =
+                        cls.classify(
+                                Filter.useFilter(
+                                        cls.createInstance(
+                                                homeTeamGoalsScored,
+                                                awayTeamGoalsScored,
+                                                homeTeamGoalsConceded,
+                                                awayTeamGoalsConceded,
+                                                homeTeamAvgPoints,
+                                                awayTeamAvgPoints,
+                                                homeTeamWinsAtHome,
+                                                awayTeamWinsAtAway,
+                                                homeTeamGoalsAtHome,
+                                                awayTeamGoalsAtAway),
+                                        filter),
+                                MODEL_PATH);
+
+                log.info("The class name is  " + classname);
+            } catch (Exception e) {
+                log.error("Can not classify instance with id: {}", matchResult.getId());
+                }
+
         }
 
         return null;

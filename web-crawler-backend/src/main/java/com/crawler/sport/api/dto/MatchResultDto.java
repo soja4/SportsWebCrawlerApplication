@@ -1,5 +1,6 @@
 package com.crawler.sport.api.dto;
 
+import com.crawler.sport.domain.MatchOutcome;
 import com.crawler.sport.domain.MatchResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +22,7 @@ public class MatchResultDto {
     private Integer awayTeamGoals;
     private LocalDate matchDate;
     private MatchStatusDto matchStatusDto;
+    private MatchOutcome matchOutcome;
 
     public static MatchResultDto from(MatchResult matchResult) {
         return MatchResultDto.builder()

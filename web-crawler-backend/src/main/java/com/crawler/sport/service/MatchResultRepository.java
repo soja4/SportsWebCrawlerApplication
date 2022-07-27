@@ -19,8 +19,8 @@ public interface MatchResultRepository extends JpaRepository<MatchResult, Intege
                     "select * "
                             + "from match_result "
                             + "where (home_team_id = ?1 or away_team_id = ?1) "
-                            + "and status = 'FINISHED' order by match_date asc "
-                            + "limit 20")
+                            + "and status = 'FINISHED' order by match_date desc "
+                            + "limit 10")
     List<MatchResult> findFinishedByHomeTeamIdOrAwayTeamId(Integer teamId, MatchStatus matchStatus);
 
     List<MatchResult> findByStatus(MatchStatus matchStatus, Pageable pageable);
