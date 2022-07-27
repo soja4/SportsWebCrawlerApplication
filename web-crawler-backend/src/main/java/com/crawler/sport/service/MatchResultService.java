@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,8 @@ public class MatchResultService {
     Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "matchDate"));
     Pageable pageableForFinishedMatches =
             PageRequest.of(0, 1000, Sort.by(Sort.Direction.DESC, "matchDate"));
+    Pageable pageableForToBePlayedMatches =
+            PageRequest.of(0, 1000, Sort.by(Sort.Direction.ASC, "matchDate"));
     @Autowired private MatchResultRepository matchRepository;
 
     public static final String MODEL_PATH = "/Users/soja/model.bin";
@@ -76,7 +79,7 @@ public class MatchResultService {
     }
 
     public List<MatchResult> getMatchesToBePlayed() {
-        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, pageableForFinishedMatches);
+        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, pageableForToBePlayedMatches);
     }
 
     public List<MatchResult> getMatchesToBePlayedAndPredictions() throws Exception {
@@ -160,7 +163,7 @@ public class MatchResultService {
                 }
             }
 
-            String classname = null;
+            String classname;
             try {
                 classname =
                         cls.classify(
@@ -179,6 +182,7 @@ public class MatchResultService {
                                         filter),
                                 MODEL_PATH);
 
+                matchResult.setMatchOutcome(classname);
                 log.info("The class name is  " + classname);
             } catch (Exception e) {
                 log.error("Can not classify instance with id: {}", matchResult.getId());
@@ -186,7 +190,9 @@ public class MatchResultService {
 
         }
 
-        return null;
+        return matches.stream()
+                .filter(m -> m.getMatchOutcome() != null)
+                .collect(Collectors.toList());
     }
 
     public Instances getFinishedMatchesAndMakeInstances() {

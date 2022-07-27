@@ -40,4 +40,7 @@ public class MatchResult {
 
     @Column(name = "match_date", nullable = false)
     private LocalDate matchDate;
+
+    @Transient
+    private String matchOutcome;
 }
