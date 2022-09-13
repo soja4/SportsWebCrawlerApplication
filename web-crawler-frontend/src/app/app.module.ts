@@ -16,7 +16,7 @@ import {matchResultReducer} from "./web-crawler-app/overview-page/state/match-re
     BrowserModule,
     AppRoutingModule,
     OverviewPageModule,
-    StoreModule.forRoot({count: matchResultReducer})
+    StoreModule.forRoot(matchResultReducer)
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -21,6 +21,7 @@ import weka.core.Instances;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Normalize;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,7 @@ public class MatchResultService {
             PageRequest.of(0, 1000, Sort.by(Sort.Direction.ASC, "matchDate"));
     @Autowired private MatchResultRepository matchRepository;
 
-    public static final String MODEL_PATH = "/Users/soja/model.bin";
+    public static final String MODEL_PATH = "C:/Users/Soja/model.bin";
 
     ModelGenerator mg = new ModelGenerator();
 
@@ -78,12 +79,12 @@ public class MatchResultService {
         return matchRepository.findByAwayTeamIdAndStatus(teamId, MatchStatus.FINISHED, pageable);
     }
 
-    public List<MatchResult> getMatchesToBePlayed() {
-        return matchRepository.findByStatus(MatchStatus.TO_BE_PLAYED, pageableForToBePlayedMatches);
+    public List<MatchResult> getMatchesToBePlayed(LocalDate matchDate) {
+        return matchRepository.findByStatusAndMatchDate(MatchStatus.TO_BE_PLAYED, matchDate, pageableForToBePlayedMatches);
     }
 
-    public List<MatchResult> getMatchesToBePlayedAndPredictions() throws Exception {
-        List<MatchResult> matches = getMatchesToBePlayed();
+    public List<MatchResult> getMatchesToBePlayedAndPredictions(String matchDate) throws Exception {
+        List<MatchResult> matches = getMatchesToBePlayed(LocalDate.parse(matchDate));
 
         Instances dataset = loadDataset();
 
