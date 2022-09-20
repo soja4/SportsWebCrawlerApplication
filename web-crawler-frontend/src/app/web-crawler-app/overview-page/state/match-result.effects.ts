@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {Actions, createEffect, Effect, ofType} from "@ngrx/effects";
+import {Actions, createEffect, ofType} from "@ngrx/effects";
 import {OverviewPageComponentService} from "./match-result.service";
 import {getMatchResultList, getMatchResultListError, getMatchResultListSuccess} from "./match-result.actions";
 import {catchError, map, of, switchMap} from "rxjs";
