@@ -7,6 +7,7 @@ import {OverviewPageModule} from "./web-crawler-app/overview-page/overview-page.
 
 import {StoreModule} from '@ngrx/store';
 import {matchResultReducer} from "./web-crawler-app/overview-page/state/match-result.reducer";
+import {EffectsModule} from "@ngrx/effects";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import {matchResultReducer} from "./web-crawler-app/overview-page/state/match-re
     BrowserModule,
     AppRoutingModule,
     OverviewPageModule,
-    StoreModule.forRoot(matchResultReducer)
+    StoreModule.forRoot(matchResultReducer),
+    EffectsModule.forRoot([]),
   ],
   providers: [],
   bootstrap: [AppComponent]

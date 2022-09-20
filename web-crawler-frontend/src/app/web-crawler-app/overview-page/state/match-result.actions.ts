@@ -4,6 +4,7 @@ import {MatchResult} from "../model/matchResult";
 
 export const getMatchResultList = createAction(
   '[MatchResult] Get list of match results',
+  props<{ date: Date }>()
 );
 
 
