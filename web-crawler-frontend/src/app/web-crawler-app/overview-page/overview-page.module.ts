@@ -8,6 +8,9 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {EffectsModule} from "@ngrx/effects";
 import {OverviewPageComponentEffects} from "./state/match-result.effects";
 import {HttpClientModule} from "@angular/common/http";
+import {MatMomentDateModule} from "@angular/material-moment-adapter";
+import {StoreModule} from "@ngrx/store";
+import {matchResultReducer} from "./state/match-result.reducer";
 
 const routes: Routes = [
   {
@@ -27,10 +30,12 @@ const routes: Routes = [
   ],
   providers: [],
   imports: [
+    StoreModule.forFeature('matchResults', matchResultReducer),
     RouterModule.forChild(routes),
     MatDatepickerModule,
     MatInputModule,
     MatNativeDateModule,
+    MatMomentDateModule,
     BrowserAnimationsModule,
     EffectsModule.forFeature([OverviewPageComponentEffects]),
     HttpClientModule,

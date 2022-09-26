@@ -6,4 +6,13 @@
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-datepicker #picker></mat-datepicker>
   </mat-form-field>
+  <div>
+    <div *ngFor="let matchResult of matchResults | async">
+      <tr>
+        <td>{{matchResult?.homeTeam}}</td>
+        <td>{{matchResult?.outcome}}</td>
+        <td>{{matchResult?.awayTeam}}</td>
+      </tr>
+    </div >
+  </div>
 </div>

@@ -1,19 +1,27 @@
-import {Action} from '@ngrx/store';
+import {createReducer, on} from '@ngrx/store';
+import {getMatchResultListSuccess} from "./match-result.actions";
+import {MatchResult} from "../model/matchResult";
 
-export const initialState = 0;
+export interface MatchResultState {
+  matchResults: MatchResult[] // Pass the entity type, on this case Entity[]
+}
 
-export function matchResultReducer(state = initialState, action: Action) {
-  /*switch (action.type) {
-    case ActionTypes.Increment:
-      return state + 1;
+export const initialState: MatchResultState = {
+  matchResults: []
+};
 
-    case ActionTypes.Decrement:
-      return state - 1;
+export const matchResultReducer = createReducer(initialState, on(getMatchResultListSuccess, (state, action) => ({
+  ...state,
+  matchResults: action.matchResults
+})))
 
-    case ActionTypes.Reset:
-      return 0;
+/*export function matchResultReducer(state: MatchResult[] = [], action: Action) {
+  switch (action.type) {
+    case getMatchResultListSuccess:
+      return {};
 
     default:
       return state;
-  }*/
-}
+  }
+}*/
+
