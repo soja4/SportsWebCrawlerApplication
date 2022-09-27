@@ -35,6 +35,7 @@ const routes: Routes = [
   providers: [],
   imports: [
     StoreModule.forFeature('matchResults', matchResultReducer),
+    StoreModule.forFeature('isLoading', matchResultReducer),
     RouterModule.forChild(routes),
     MatDatepickerModule,
     MatInputModule,

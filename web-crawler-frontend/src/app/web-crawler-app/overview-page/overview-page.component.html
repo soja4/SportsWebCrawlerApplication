@@ -8,7 +8,9 @@
   </mat-form-field>
 </div>
 
-<div class="page-center pad-top">
+<img class="loader" *ngIf="isLoading" src="assets/spinner.gif" />
+
+<div class="page-center pad-top" *ngIf="!isLoading">
   <table mat-table [dataSource]="matchResults" class="mat-elevation-z8">
     <ng-container matColumnDef="homeTeam">
       <th mat-header-cell *matHeaderCellDef> Home team</th>

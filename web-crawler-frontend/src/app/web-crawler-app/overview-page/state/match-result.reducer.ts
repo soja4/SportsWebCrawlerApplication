@@ -1,27 +1,25 @@
 import {createReducer, on} from '@ngrx/store';
-import {getMatchResultListSuccess} from "./match-result.actions";
+import {getMatchResultList, getMatchResultListSuccess} from "./match-result.actions";
 import {MatchResult} from "../model/matchResult";
 
 export interface MatchResultState {
-  matchResults: MatchResult[] // Pass the entity type, on this case Entity[]
+  matchResults: MatchResult[],
+  isLoading: boolean
 }
 
 export const initialState: MatchResultState = {
-  matchResults: []
+  matchResults: [],
+  isLoading: false
 };
 
-export const matchResultReducer = createReducer(initialState, on(getMatchResultListSuccess, (state, action) => ({
-  ...state,
-  matchResults: action.matchResults
-})))
-
-/*export function matchResultReducer(state: MatchResult[] = [], action: Action) {
-  switch (action.type) {
-    case getMatchResultListSuccess:
-      return {};
-
-    default:
-      return state;
-  }
-}*/
+export const matchResultReducer = createReducer(initialState,
+  on(getMatchResultListSuccess, (state, action) => ({
+    ...state,
+    matchResults: action.matchResults,
+    isLoading: false
+  })),
+  on(getMatchResultList, (state) => ({
+    ...state,
+    isLoading: true
+  })))
 

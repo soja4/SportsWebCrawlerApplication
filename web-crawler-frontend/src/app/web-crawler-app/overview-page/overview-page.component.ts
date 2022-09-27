@@ -1,10 +1,10 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {MatDatepickerInputEvent} from "@angular/material/datepicker";
 import {State, Store} from "@ngrx/store";
 import {getMatchResultList} from "./state/match-result.actions";
 
 import * as _moment from 'moment';
-import {getMatchResultsSelector} from "./state/match-result.selector";
+import {getIsLoading, getMatchResultsSelector} from "./state/match-result.selector";
 import {MatchResult} from "./model/matchResult";
 
 const moment = _moment;
@@ -16,13 +16,22 @@ const moment = _moment;
     './overview-page.component.scss'
   ],
 })
-export class OverviewPageComponent {
+export class OverviewPageComponent implements OnInit {
 
   matchResults!: MatchResult[];
+
+  isLoading!: boolean;
 
   displayedColumns: string[] = ['homeTeam', 'matchOutcome', 'awayTeam'];
 
   constructor(private store: Store<State<any>>) {
+  }
+
+  ngOnInit(): void {
+    this.store.select(getIsLoading).pipe().subscribe( isLoading => {
+      // @ts-ignore
+      this.isLoading = isLoading;
+    });
   }
 
   addEvent(type: string, event: MatDatepickerInputEvent<unknown, unknown | null>) {
@@ -38,7 +47,6 @@ export class OverviewPageComponent {
     this.store.select(getMatchResultsSelector).pipe().subscribe( matchResults => {
       // @ts-ignore
       this.matchResults = matchResults;
-      console.log(this.matchResults);
     });
   }
 }
