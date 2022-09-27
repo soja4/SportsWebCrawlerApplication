@@ -5,8 +5,8 @@ import {getMatchResultList} from "./state/match-result.actions";
 
 import * as _moment from 'moment';
 import {getMatchResultsSelector} from "./state/match-result.selector";
-import {Observable} from "rxjs";
 import {MatchResult} from "./model/matchResult";
+
 const moment = _moment;
 
 @Component({
