@@ -18,7 +18,9 @@ const moment = _moment;
 })
 export class OverviewPageComponent {
 
-  matchResults!: Observable<MatchResult[]>;
+  matchResults!: MatchResult[];
+
+  displayedColumns: string[] = ['homeTeam', 'matchOutcome', 'awayTeam'];
 
   constructor(private store: Store<State<any>>) {
   }

@@ -11,6 +11,10 @@ import {HttpClientModule} from "@angular/common/http";
 import {MatMomentDateModule} from "@angular/material-moment-adapter";
 import {StoreModule} from "@ngrx/store";
 import {matchResultReducer} from "./state/match-result.reducer";
+import {MatListModule} from "@angular/material/list";
+import {MatIconModule} from "@angular/material/icon";
+import {MatButtonModule} from "@angular/material/button";
+import {MatTableModule} from "@angular/material/table";
 
 const routes: Routes = [
   {
@@ -39,6 +43,10 @@ const routes: Routes = [
     BrowserAnimationsModule,
     EffectsModule.forFeature([OverviewPageComponentEffects]),
     HttpClientModule,
+    MatListModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTableModule,
   ],
 })
 export class OverviewPageModule {}

@@ -3,3 +3,27 @@
   align-content: center;
   justify-content: center;
 }
+
+.no-click {
+  pointer-events: none;
+}
+
+.green-button {
+  background-color: green;
+}
+.red-button {
+  background-color: red;
+}
+.yellow-button {
+  background-color: yellow;
+  color: black;
+}
+
+table {
+  width: 70%;
+}
+
+.pad-top {
+  padding-top: 25px;
+}
+
